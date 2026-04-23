@@ -18,7 +18,7 @@ const SectionHeading: React.FC<{ title: string; themeClass: string }> = ({ title
 const TechBadge: React.FC<{ text: string; theme: ColorTheme }> = ({ text, theme }) => {
   const t = themeConfigs[theme];
   return (
-    <span className={`inline-block px-1.5 py-0.5 rounded text-[9px] font-medium ${t.badge} ${t.badgeText} border ${t.border.replace('border-', 'border-')}`}>
+    <span className={`inline-flex items-center px-1.5 py-px rounded text-[8.5px] font-medium ${t.badge} ${t.badgeText}`}>
       {text}
     </span>
   );

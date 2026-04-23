@@ -159,7 +159,8 @@ export const ModernTemplate: React.FC<Props> = ({ data, theme }) => {
                 {exp.technologies.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-1.5">
                     {exp.technologies.map((tech) => (
-                      <span key={tech} className="text-[8px] px-1.5 py-0.5 rounded font-medium"
+                      <span key={tech}
+                        className="text-[8px] px-1.5 py-px rounded font-medium"
                         style={{ background: colors.light, color: colors.bg }}>
                         {tech}
                       </span>

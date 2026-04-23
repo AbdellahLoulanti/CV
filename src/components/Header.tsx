@@ -67,28 +67,28 @@ export const Header: React.FC = () => {
   ] as const;
 
   return (
-    <header className="h-14 bg-white border-b border-slate-200 flex items-center justify-between px-5 flex-shrink-0 z-20">
+    <header className="h-14 bg-white border-b border-slate-200 flex items-center justify-between px-3 sm:px-5 flex-shrink-0 z-20">
       {/* Logo */}
-      <div className="flex items-center gap-2.5">
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
+      <div className="flex items-center gap-2">
+        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center flex-shrink-0">
           <FileText size={16} className="text-white" />
         </div>
-        <div>
+        <div className="hidden sm:block">
           <span className="text-sm font-bold text-slate-900">CV Builder</span>
           <span className="text-xs text-slate-400 ml-1">Pro</span>
         </div>
       </div>
 
       {/* Center controls */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
         {/* Template picker */}
         <Dropdown
           trigger={
-            <button className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-slate-700 
+            <button className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 text-sm font-medium text-slate-700 
               bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg transition-colors cursor-pointer">
               <LayoutTemplate size={14} className="text-slate-500" />
-              <span>{TEMPLATES.find((t) => t.id === template)?.label}</span>
-              <ChevronDown size={12} className="text-slate-400" />
+              <span className="hidden sm:inline">{TEMPLATES.find((t) => t.id === template)?.label}</span>
+              <ChevronDown size={12} className="text-slate-400 hidden sm:inline" />
             </button>
           }
         >
@@ -115,11 +115,11 @@ export const Header: React.FC = () => {
         {/* Color picker */}
         <Dropdown
           trigger={
-            <button className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-slate-700 
+            <button className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 text-sm font-medium text-slate-700 
               bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg transition-colors cursor-pointer">
               <Palette size={14} className="text-slate-500" />
-              <div className="w-3 h-3 rounded-full" style={{ background: COLORS.find((c) => c.id === colorTheme)?.hex }} />
-              <ChevronDown size={12} className="text-slate-400" />
+              <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: COLORS.find((c) => c.id === colorTheme)?.hex }} />
+              <ChevronDown size={12} className="text-slate-400 hidden sm:inline" />
             </button>
           }
         >
@@ -145,8 +145,8 @@ export const Header: React.FC = () => {
           </div>
         </Dropdown>
 
-        {/* View mode */}
-        <div className="flex items-center bg-slate-100 rounded-lg p-0.5 gap-0.5">
+        {/* View mode — desktop only (mobile uses bottom nav) */}
+        <div className="hidden md:flex items-center bg-slate-100 rounded-lg p-0.5 gap-0.5">
           {viewModes.map((m) => (
             <button
               key={m.id}
@@ -169,10 +169,11 @@ export const Header: React.FC = () => {
         <div className="relative">
           <button
             onClick={() => setShowReset(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-slate-500 hover:text-red-600 
+            className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 text-xs text-slate-500 hover:text-red-600 
               hover:bg-red-50 border border-slate-200 hover:border-red-200 rounded-lg transition-all font-medium"
           >
-            <RotateCcw size={13} /> Reset
+            <RotateCcw size={13} />
+            <span className="hidden sm:inline">Reset</span>
           </button>
           <AnimatePresence>
             {showReset && (
