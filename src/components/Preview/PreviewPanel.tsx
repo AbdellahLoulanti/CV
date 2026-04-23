@@ -42,13 +42,34 @@ export const PreviewPanel: React.FC = () => {
         import('jspdf'),
       ]);
 
-      const canvas = await html2canvas(cvRef.current, {
-        scale: 3,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#ffffff',
-        width: A4_WIDTH_PX,
-      });
+      // Clone CV into an offscreen container to avoid scaled-parent transform artifacts in PDF.
+      const exportRoot = document.createElement('div');
+      exportRoot.style.position = 'fixed';
+      exportRoot.style.left = '-99999px';
+      exportRoot.style.top = '0';
+      exportRoot.style.width = `${A4_WIDTH_PX}px`;
+      exportRoot.style.background = '#ffffff';
+      exportRoot.style.pointerEvents = 'none';
+
+      const clonedNode = cvRef.current.cloneNode(true) as HTMLDivElement;
+      clonedNode.style.transform = 'none';
+      clonedNode.style.width = `${A4_WIDTH_PX}px`;
+      clonedNode.style.margin = '0';
+      exportRoot.appendChild(clonedNode);
+      document.body.appendChild(exportRoot);
+
+      let canvas: HTMLCanvasElement;
+      try {
+        canvas = await html2canvas(clonedNode, {
+          scale: 3,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: '#ffffff',
+          width: A4_WIDTH_PX,
+        });
+      } finally {
+        document.body.removeChild(exportRoot);
+      }
 
       const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
       const pageW = pdf.internal.pageSize.getWidth();
@@ -126,8 +147,14 @@ export const PreviewPanel: React.FC = () => {
   // Height of the scaled CV content for correct scroll space
   const [cvHeight, setCvHeight] = useState(A4_HEIGHT_PX);
   useEffect(() => {
-    if (cvRef.current) setCvHeight(cvRef.current.scrollHeight);
-  });
+    const el = cvRef.current;
+    if (!el) return;
+    const updateHeight = () => setCvHeight(el.scrollHeight);
+    updateHeight();
+    const ro = new ResizeObserver(updateHeight);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [cvData, template, colorTheme]);
   const scaledHeight = cvHeight * scale;
 
   // Page-break positions inside the CV (unscaled px)
